@@ -1,5 +1,7 @@
 package com.vaibhav.userauthservice.controller;
 
+import com.vaibhav.userauthservice.dto.LoginRequest;
+import com.vaibhav.userauthservice.dto.LoginResponse;
 import com.vaibhav.userauthservice.dto.RegisterRequest;
 import com.vaibhav.userauthservice.entity.User;
 import com.vaibhav.userauthservice.service.UserService;
@@ -18,5 +20,10 @@ public class UserController {
     public ResponseEntity<User> register(@RequestBody RegisterRequest request) {
         User savedUser = userService.registerUser(request);
         return ResponseEntity.ok(savedUser);
+    }
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        String token = userService.loginUser(request);
+        return ResponseEntity.ok(new LoginResponse(token));
     }
 }
