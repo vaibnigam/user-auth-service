@@ -7,6 +7,7 @@ import com.vaibhav.userauthservice.entity.User;
 import com.vaibhav.userauthservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,5 +26,10 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         String token = userService.loginUser(request);
         return ResponseEntity.ok(new LoginResponse(token));
+    }
+    @GetMapping("/me")
+    public ResponseEntity<String> getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return ResponseEntity.ok("Logged in as: " + email);
     }
 }
