@@ -28,8 +28,19 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-        String email = oAuth2User.getAttribute("email");
-        String name = oAuth2User.getAttribute("name");
+        String rawEmail = oAuth2User.getAttribute("email");
+        String rawName = oAuth2User.getAttribute("name");
+
+        if (rawEmail == null) {
+            String login = oAuth2User.getAttribute("login");
+            rawEmail = login + "@github.com";
+            if (rawName == null) {
+                rawName = login;
+            }
+        }
+
+        final String email = rawEmail;
+        final String name = rawName;
 
         User user = userRepository.findByEmail(email).orElseGet(() -> {
             User newUser = new User();
@@ -45,4 +56,5 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         response.setContentType("application/json");
         response.getWriter().write("{\"token\": \"" + token + "\"}");
     }
+
 }
